@@ -43,28 +43,13 @@ public class GithubApi {
   @GetMapping("/reposfinal")
   String getListReposFinal(@RequestParam final String gitHubUser) throws JsonMappingException, JsonProcessingException {
 
-    String result = "Getting repos list of: " + gitHubUser;
     String repositoryListsUrl = this.gitHubApiUrl + "/users/" + gitHubUser + "/repos";
-    /*
-     * RestTemplate restTemplate = new RestTemplate(); HttpHeaders headers = new
-     * HttpHeaders(); headers.add("Authorization", "Bearer " + githubToken);
-     * headers.add("Content-Type", "application/json"); headers.add("Content-Type",
-     * "application/json"); // String jsonRepository = new Gson().toJson(newRepo);
-     * String jsonRepository = "new Gson().toJson(newRepo)"; HttpEntity<String>
-     * entity = new HttpEntity<String>(jsonRepository, headers);
-     * ResponseEntity<String> resultb =
-     * restTemplate.getForEntity("https://api.github.com/user/repos", entity,
-     * String.class);
-     * 
-     * return result;
-     */
+
     final RestTemplate restTemplate = new RestTemplate();
     final ResponseEntity<String> response = restTemplate.getForEntity(repositoryListsUrl, String.class);
-    // assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 
     ObjectMapper mapper = new ObjectMapper();
     JsonNode root = mapper.readTree(response.getBody());
-    //final JsonNode name = root.path("name");
 
     return root.toPrettyString();
   }
