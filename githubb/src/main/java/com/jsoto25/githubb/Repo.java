@@ -1,28 +1,35 @@
 package com.jsoto25.githubb;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * GitHub repository class operations
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Repo {
 	/**
 	 * Repository name
 	 */
-	String name = "";
+	@JsonProperty("name")
+	public String name = "";
 	/**
 	 * Repository description
 	 */
-	String description = "";
+	@JsonProperty("description")
+	public String description = "";
 	/**
 	 * Repository home page URL
 	 */
-	String homepage = "";
+	@JsonProperty("homepage")
+	public String homepage = "";
 	/**
 	 * ???????
 	 */
-	Boolean autoInit = true;
+	@JsonIgnore
+	public Boolean autoInit = true;
 	
-
-	
+	@JsonIgnore
 	/**
 	 * Repository class construtor for initialization.
 	 * @param name Repository name
@@ -33,6 +40,11 @@ public class Repo {
 		this.name=name;
 		this.description=description;
 		this.homepage=homepage;
+	}
+
+	public Repo()
+	{
+		super();
 	}
 	
 }

@@ -1,9 +1,6 @@
 package com.jsoto25.githubb;
 
-import javax.websocket.server.PathParam;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.sym.Name;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.autoconfigure.*;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -45,8 +41,8 @@ public class GithubApi {
 
     String repositoryListsUrl = this.gitHubApiUrl + "/users/" + gitHubUser + "/repos";
 
-    final RestTemplate restTemplate = new RestTemplate();
-    final ResponseEntity<String> response = restTemplate.getForEntity(repositoryListsUrl, String.class);
+    RestTemplate restTemplate = new RestTemplate();
+    ResponseEntity<String> response = restTemplate.getForEntity(repositoryListsUrl, String.class);
 
     ObjectMapper mapper = new ObjectMapper();
     JsonNode root = mapper.readTree(response.getBody());
@@ -56,19 +52,21 @@ public class GithubApi {
 
   @PostMapping("/create")
 
-  String newEmployee(@RequestBody final Repo newRepo) {
+  String newRepository(@RequestBody Repo newRepo) throws JsonProcessingException {
 
-    final RestTemplate restTemplate = new RestTemplate();
-    final HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", "Bearer " + githubToken);
+    RestTemplate restTemplate = new RestTemplate();
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Authorization", "Basic anNvdG8wMDI1OmQ0MmU5YjUyNTU2MDJiOWIwYTQ3YThmN2I4YTUzOWRiZWFiMzE4NzI=");
     headers.add("Content-Type", "application/json");
-    headers.add("Content-Type", "application/json");
-    // String jsonRepository = new Gson().toJson(newRepo);
-    final String jsonRepository = "new Gson().toJson(newRepo)";
-    final HttpEntity<String> entity = new HttpEntity<String>(jsonRepository, headers);
-    final String result = restTemplate.postForObject("https://api.github.com/user/repos", entity, String.class);
+    ObjectMapper mapper = new ObjectMapper();
+    String jsonRepository = mapper.writeValueAsString(newRepo);
+    HttpEntity<String> entity = new HttpEntity<String>(jsonRepository, headers);
+    String response = restTemplate.postForObject(this.gitHubApiUrl + "user/repos", entity, String.class);
+    ObjectMapper resultMapper = new ObjectMapper();
+    JsonNode root = resultMapper.readTree(response);
 
-    return result;
+    return root.toPrettyString();
+
   }
 
 }
