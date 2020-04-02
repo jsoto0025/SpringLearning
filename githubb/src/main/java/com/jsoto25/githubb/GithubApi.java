@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 @EnableAutoConfiguration
 public class GithubApi {
 
-  private final String githubToken = "4c97eac7fa51ffd034a223f566b8ed7e045eca9b";
+  private final String githubToken = "[GITHUB TOKEN]";
   private final String gitHubApiUrl = "https://api.github.com/";
 
   @CrossOrigin
@@ -62,16 +62,16 @@ public class GithubApi {
     return jsonResponseRootNode.toPrettyString();
   }
 
-  @PostMapping("/create")
+  @PostMapping("/createfinal")
 
   /**
-   * REST Method for GitHub repository creation, using Basic Authentication
+   * REST Method for GitHub repository creation, using Bearer Authentication
    * 
    * @param newRepo POJO GitHub repository object
    * @return Text formated in JSON with the GitHub API v3 resoult
    * @throws JsonProcessingException
    */
-  String newRepository(@RequestBody Repo newRepo) throws JsonProcessingException {
+  String newRepositoryBearer(@RequestBody Repo newRepo) throws JsonProcessingException {
 
     RestTemplate restTemplate = new RestTemplate();
     HttpHeaders headers;
@@ -83,7 +83,7 @@ public class GithubApi {
     HttpEntity<String> entity;
 
     headers = new HttpHeaders();
-    headers.add("Authorization", "Basic anNvdG8wMDI1OmQ0MmU5YjUyNTU2MDJiOWIwYTQ3YThmN2I4YTUzOWRiZWFiMzE4NzI=");
+    headers.add("Authorization", "Bearer " + this.githubToken );
     headers.add("Content-Type", "application/json");
 
     mapper = new ObjectMapper();
