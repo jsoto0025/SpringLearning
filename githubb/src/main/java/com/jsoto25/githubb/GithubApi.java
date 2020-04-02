@@ -36,36 +36,64 @@ public class GithubApi {
 
   }
 
+  /**
+   * REST Method used to get the GitHub repository list from a GitHub registered
+   * user
+   * 
+   * @param gitHubUser GitHub registered user
+   * @return JSON Formated String with GitHb repository list from GitHub registered user.
+   * @throws JsonMappingException
+   * @throws JsonProcessingException
+   */
   @GetMapping("/reposfinal")
   String getListReposFinal(@RequestParam final String gitHubUser) throws JsonMappingException, JsonProcessingException {
 
-    String repositoryListsUrl = this.gitHubApiUrl + "/users/" + gitHubUser + "/repos";
+    String userRepositoryList;
+    RestTemplate restTemplate;
+    ResponseEntity<String> response;
+    ObjectMapper jsonMapper;
+    JsonNode jsonResponseRootNode;
 
-    RestTemplate restTemplate = new RestTemplate();
-    ResponseEntity<String> response = restTemplate.getForEntity(repositoryListsUrl, String.class);
-
-    ObjectMapper mapper = new ObjectMapper();
-    JsonNode root = mapper.readTree(response.getBody());
-
-    return root.toPrettyString();
+    userRepositoryList = this.gitHubApiUrl + "/users/" + gitHubUser + "/repos";
+    restTemplate = new RestTemplate();
+    response = restTemplate.getForEntity(userRepositoryList, String.class);
+    jsonMapper = new ObjectMapper();
+    jsonResponseRootNode = jsonMapper.readTree(response.getBody());
+    return jsonResponseRootNode.toPrettyString();
   }
 
   @PostMapping("/create")
 
+  /**
+   * REST Method for GitHub repository creation, using Basic Authentication
+   * 
+   * @param newRepo POJO GitHub repository object
+   * @return Text formated in JSON with the GitHub API v3 resoult
+   * @throws JsonProcessingException
+   */
   String newRepository(@RequestBody Repo newRepo) throws JsonProcessingException {
 
     RestTemplate restTemplate = new RestTemplate();
-    HttpHeaders headers = new HttpHeaders();
+    HttpHeaders headers;
+    ObjectMapper mapper;
+    String jsonRepository;
+    ObjectMapper resultMapper;
+    String response;
+    JsonNode jsonRootResponse;
+    HttpEntity<String> entity;
+
+    headers = new HttpHeaders();
     headers.add("Authorization", "Basic anNvdG8wMDI1OmQ0MmU5YjUyNTU2MDJiOWIwYTQ3YThmN2I4YTUzOWRiZWFiMzE4NzI=");
     headers.add("Content-Type", "application/json");
-    ObjectMapper mapper = new ObjectMapper();
-    String jsonRepository = mapper.writeValueAsString(newRepo);
-    HttpEntity<String> entity = new HttpEntity<String>(jsonRepository, headers);
-    String response = restTemplate.postForObject(this.gitHubApiUrl + "user/repos", entity, String.class);
-    ObjectMapper resultMapper = new ObjectMapper();
-    JsonNode root = resultMapper.readTree(response);
 
-    return root.toPrettyString();
+    mapper = new ObjectMapper();
+    jsonRepository = mapper.writeValueAsString(newRepo);
+    entity = new HttpEntity<String>(jsonRepository, headers);
+    response = restTemplate.postForObject(this.gitHubApiUrl + "user/repos", entity, String.class);
+    resultMapper = new ObjectMapper();
+    jsonRootResponse = resultMapper.readTree(response);
+
+    return jsonRootResponse.toPrettyString();
 
   }
 
