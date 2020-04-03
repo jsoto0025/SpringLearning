@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 @EnableAutoConfiguration
 public class GithubApi {
 
-  private final String githubToken = "d42e9b5255602b9b0a47a8f7b8a539dbeab31872";
+  private final String githubToken = "[MY-GITHUP-DEVELOPER-TOKEN]";
   private final String gitHubApiUrl = "https://api.github.com/";
 
   @CrossOrigin
